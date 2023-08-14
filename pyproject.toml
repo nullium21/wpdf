@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "wpdf"
+version = "0.1.0"
+description = "Wattpad story downloader into PDF, using fpdf2."
+authors = ["Lina <dev@lina.moe>"]
+
+[[tool.poetry.packages]]
+include = "wpdf"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+requests = "^2.31.0"
+fpdf2 = "^2.7.5"
+
+[tool.poetry.scripts]
+wpdf = "wpdf:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
