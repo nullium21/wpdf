@@ -35,6 +35,7 @@ class Document(FPDF):
 
     def add_cover(self, cover_url: str):
         self.add_page()
+        self.start_section('Cover Art', level=1)
         self.image(cover_url, x=0, y=0, w=self._full_width, h=self._full_height)
 
     @staticmethod
