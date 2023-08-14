@@ -22,6 +22,7 @@ def main():
     manual_fonts.add_argument('-I', '--font-italic', help='Filename for the Italic font variation to use')
 
     args.add_argument('-o', '--output', required=True, help='Output filename')
+    args.add_argument('--toc-length', type=int, default=2, help='Table of Contents length in pages')
     args = args.parse_args()
 
     if args.story:
@@ -47,9 +48,9 @@ def main():
 
     if story.cover:
         doc.add_cover(story.cover)
-    doc.add_toc_page(story.title)
+    doc.add_toc_page(story.title, args.toc_length)
 
-    for part in parts:  # for testing, only use first 20
+    for part in parts:
         html = wp.story_part_text(part)
         doc.add_chapter(part.title, html)
 

@@ -46,7 +46,12 @@ class Document(FPDF):
             self.cell(0, txt=section.name, align='L', link=link, new_x='LMARGIN')
             self.cell(0, txt=str(section.page_number), align='R', link=link, new_x='LMARGIN', new_y='NEXT')
 
-    def add_toc_page(self, title: str):
+        # if our ToC is too small, pad it with pages.
+        expected_final_page = self._toc_placeholder.start_page + self._toc_placeholder.pages - 1
+        for _ in range(self.page, expected_final_page):
+            self.add_page()
+
+    def add_toc_page(self, title: str, n_pages: int = 2):
         self.add_page()
         self.start_section('Table of Contents', level=1)
 
@@ -56,7 +61,7 @@ class Document(FPDF):
         with self.use_font_face(FontFace(size_pt=16)):
             self.cell(h=20, txt='Table of Contents', new_x='LMARGIN', new_y='NEXT', center=True)
 
-        self._toc_placeholder = ToCPlaceholder(self._render_toc, self.page, self.y, 2)
+        self._toc_placeholder = ToCPlaceholder(self._render_toc, self.page, self.y, n_pages)
         for _ in range(1, self._toc_placeholder.pages):
             self.add_page()
 
