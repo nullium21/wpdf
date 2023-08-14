@@ -11,6 +11,16 @@ def main():
     story_or_chapters.add_argument('-s', '--story', help='Wattpad story ID to fetch all chapters from')
     story_or_chapters.add_argument('-c', '--chapters', nargs='+', help='Wattpad chapter IDs to fetch')
 
+    default_fonts = '/usr/share/fonts/noto/NotoSans-{variation}.ttf'
+
+    font_settings = args.add_mutually_exclusive_group()
+    font_settings.add_argument('-f', '--font-template', help=f'Font filename template to use (default: {default_fonts})',
+                               default=default_fonts)
+    manual_fonts = font_settings.add_argument_group()
+    manual_fonts.add_argument('-R', '--font-regular', help='Filename for the Regular font variation to use')
+    manual_fonts.add_argument('-B', '--font-bold', help='Filename for the Bold font variation to use')
+    manual_fonts.add_argument('-I', '--font-italic', help='Filename for the Italic font variation to use')
+
     args.add_argument('-o', '--output', required=True, help='Output filename')
     args = args.parse_args()
 
@@ -24,11 +34,16 @@ def main():
         assert len(stories) == 1
         story = wp.story_by_id(stories.pop())
 
-    doc = Document(FontSet(
-        regular='/usr/share/fonts/noto/NotoSans-Regular.ttf',
-        bold='/usr/share/fonts/noto/NotoSans-Bold.ttf',
-        italic='/usr/share/fonts/noto/NotoSans-Italic.ttf'
-    ))
+    if args.font_template:
+        fonts = FontSet(
+            regular=args.font_template.format(variation='Regular'),
+            bold=args.font_template.format(variation='Bold'),
+            italic=args.font_template.format(variation='Italic')
+        )
+    else:
+        fonts = FontSet(regular=args.font_regular, bold=args.font_bold, italic=args.font_italic)
+
+    doc = Document(fonts)
 
     if story.cover:
         doc.add_cover(story.cover)
